@@ -22,10 +22,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		if (user == null) {
 			System.out.println("No User Name Found");
 			throw new UsernameNotFoundException("User Name not Found");
-		}else {
-				
 		}
-		
 		return user;
 	}
 

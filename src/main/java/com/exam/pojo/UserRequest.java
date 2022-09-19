@@ -1,21 +1,16 @@
 package com.exam.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class UserRequest {
 
 	private Long id;
 	private String email;
-	@JsonIgnore
 	private String password;
 	private String firstName;
 	private String lastName;
 	private String contactNumber;
 	private String about;
 	private String profile;
-	private boolean enabled;
-
-	
+	private boolean enabled = true;
 
 	public Long getId() {
 		return id;
@@ -95,7 +90,5 @@ public class UserRequest {
 				+ ", lastName=" + lastName + ", contactNumber=" + contactNumber + ", about=" + about + ", profile="
 				+ profile + ", enabled=" + enabled + "]";
 	}
-
-	
 
 }

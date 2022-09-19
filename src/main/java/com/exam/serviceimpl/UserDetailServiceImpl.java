@@ -1,4 +1,4 @@
-package com.exam.entity.serviceimpl;
+package com.exam.serviceimpl;
 
 public class UserDetailServiceImpl {
 

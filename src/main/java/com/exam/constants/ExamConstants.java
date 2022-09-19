@@ -17,11 +17,17 @@ public class ExamConstants {
 	public static final String PROFILE_PIC_URL="myprofile.jpg";
 	
 	//Error Messages
+
 	public static final String NO_USER_FOUND = "NO_USER_FOUND";
 	public static final String SOMETHING_WENT_WRONG = "SOMETHING_WENT_WRONG";
 	public static final String USER_EXISTS = "USER_ALREADY_EXISTS";
-	public static final String USER_ID_DOESNT_MATCH="USER_ID_DOESNT_MATCH";
+	public static final String ID_DOESNT_MATCH="ID_DOESNT_MATCH";
+	public static final String WRONG_PASSWORD = "WRONG_PASSWORD";
 
 
+	//Category 
+	public static final String NO_CATEGORY_FOUND = "NO_CATEGORY_FOUND";
+	public static final String NO_QUIZ_FOUND = "NO_QUIZ_FOUND";
+	
 
 }

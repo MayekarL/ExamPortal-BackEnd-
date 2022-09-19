@@ -1,4 +1,4 @@
-package com.exam.entity.service;
+package com.exam.service;
 
 import com.exam.pojo.UserDto;
 import com.exam.pojo.UserRequest;

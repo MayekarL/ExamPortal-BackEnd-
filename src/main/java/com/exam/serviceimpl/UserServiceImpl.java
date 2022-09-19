@@ -1,4 +1,4 @@
-package com.exam.entity.serviceimpl;
+package com.exam.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,17 +10,18 @@ import java.util.Set;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.exam.constants.ExamConstants;
 import com.exam.entity.Role;
 import com.exam.entity.User;
 import com.exam.entity.UserRole;
-import com.exam.entity.service.UserService;
 import com.exam.pojo.UserDto;
 import com.exam.pojo.UserRequest;
 import com.exam.repo.RoleRepo;
 import com.exam.repo.UserRepo;
+import com.exam.service.UserService;
 
 
 @Service
@@ -34,11 +35,15 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public UserDto createUser(UserRequest userRequest) {
 		UserDto userDto = new UserDto();
 		try {
+			userRequest.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
 			User localUser = userRepo.findByEmail(userRequest.getEmail());
 			if (localUser != null) {
 				System.out.println("The User is already Present ");
@@ -167,9 +172,8 @@ public class UserServiceImpl implements UserService {
 					userDto.setUserRequest(modelMapper.map(updatedUser, UserRequest.class));
 				} else {
 					userDto.setCode(1);
-					userDto.setMessage(ExamConstants.USER_ID_DOESNT_MATCH);
+					userDto.setMessage("User "+ExamConstants.ID_DOESNT_MATCH);
 					userDto.setStatus(HttpStatus.BAD_REQUEST);
-
 				}
 
 			}
