@@ -45,11 +45,10 @@ public class QuizServiceImpl implements QuizService{
 	}
 
 	@Override
-	public QuizResponse updateQuiz(Long id, QuizDto quizDto) {
+	public QuizResponse updateQuiz( QuizDto quizDto) {
 		QuizResponse quizResponse = new QuizResponse();
 		try {
-			if (id == quizDto.getqId()) {
-				Quiz newQuiz = quizRepo.findById(id).get();
+				Quiz newQuiz = quizRepo.findById(quizDto.getqId()	).get();
 				newQuiz.setqId(quizDto.getqId());
 				newQuiz.setDescription(quizDto.getDescription());
 				newQuiz.setTitle(quizDto.getTitle());
@@ -63,11 +62,7 @@ public class QuizServiceImpl implements QuizService{
 				quizResponse.setMessage(ExamConstants.SUCCESS);
 				quizResponse.setStatus(HttpStatus.OK);
 				quizResponse.setQuizDto(model.map(updatedQuiz, QuizDto.class));
-			} else {
-				quizResponse.setCode(1);
-				quizResponse.setMessage(ExamConstants.ID_DOESNT_MATCH);
-				quizResponse.setStatus(HttpStatus.BAD_REQUEST);
-			}
+			
 		} catch (NoSuchElementException ex) {
 			System.out.println("Exception while UPDATING user : " + ex);
 			quizResponse.setCode(1);

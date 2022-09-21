@@ -53,7 +53,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().cors().disable().authorizeRequests().antMatchers("/generate-token","/user/create").permitAll()
+		http.csrf().disable().cors().disable().authorizeRequests().antMatchers("/generate-token","/user").permitAll()
 				.antMatchers(HttpMethod.OPTIONS).permitAll().anyRequest().authenticated().and().exceptionHandling()
 				.authenticationEntryPoint(handler).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

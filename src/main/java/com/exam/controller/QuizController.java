@@ -30,11 +30,11 @@ public class QuizController {
 		return new ResponseEntity<QuizResponse>(quizResponse,quizResponse.getStatus());
 	}
 
-	@PutMapping("/update/{id}")
-	public ResponseEntity<QuizResponse> updateQuiz(@PathVariable("id") Long id,
+	@PutMapping("/update")
+	public ResponseEntity<QuizResponse> updateQuiz(
 			@RequestBody QuizDto quizDto) {
 		System.out.println("Quiz Dto : " + quizDto);
-		QuizResponse quizResponse = quizService.updateQuiz(id, quizDto);
+		QuizResponse quizResponse = quizService.updateQuiz(quizDto);
 		return new ResponseEntity<QuizResponse>(quizResponse, quizResponse.getStatus());
 	}
 
