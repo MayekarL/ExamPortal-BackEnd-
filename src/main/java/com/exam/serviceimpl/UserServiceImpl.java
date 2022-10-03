@@ -17,12 +17,13 @@ import com.exam.constants.ExamConstants;
 import com.exam.entity.Role;
 import com.exam.entity.User;
 import com.exam.entity.UserRole;
+import com.exam.mail.EmailDetails;
+import com.exam.mail.EmailService;
 import com.exam.pojo.UserDto;
 import com.exam.pojo.UserRequest;
 import com.exam.repo.RoleRepo;
 import com.exam.repo.UserRepo;
 import com.exam.service.UserService;
-
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,9 +36,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	@Autowired
+	private EmailService emailService;
 
 	@Override
 	public UserDto createUser(UserRequest userRequest) {
@@ -69,18 +73,19 @@ public class UserServiceImpl implements UserService {
 
 				user.getUserRoles().add(userRole);
 				localUser = userRepo.save(user);
-				
+
 				userDto.setCode(0);
 				userDto.setMessage(ExamConstants.SUCCESS);
 				userDto.setStatus(HttpStatus.OK);
 				List<String> roles = new ArrayList<>();
-				for(UserRole ur :user.getUserRoles())
-				{
+				for (UserRole ur : user.getUserRoles()) {
 					roles.add(ur.getRole().getRoleName());
 				}
-				
+
 				userDto.setRoleName(roles);
 				userDto.setUserList(Arrays.asList(modelMapper.map(localUser, UserRequest.class)));
+				String sendEmailResponse = sendEmail(userRequest);
+				System.out.println("Email : "+sendEmailResponse);
 				return userDto;
 			}
 		} catch (Exception ex) {
@@ -134,7 +139,7 @@ public class UserServiceImpl implements UserService {
 			userDto.setCode(1);
 			userDto.setMessage(ExamConstants.NO_USER_FOUND);
 			userDto.setStatus(HttpStatus.BAD_REQUEST);
-		}catch (Exception ex) {
+		} catch (Exception ex) {
 			System.out.println("Exception while deleting user : " + ex);
 			userDto.setCode(1);
 			userDto.setMessage(ExamConstants.SOMETHING_WENT_WRONG);
@@ -172,7 +177,7 @@ public class UserServiceImpl implements UserService {
 					userDto.setUserRequest(modelMapper.map(updatedUser, UserRequest.class));
 				} else {
 					userDto.setCode(1);
-					userDto.setMessage("User "+ExamConstants.ID_DOESNT_MATCH);
+					userDto.setMessage("User " + ExamConstants.ID_DOESNT_MATCH);
 					userDto.setStatus(HttpStatus.BAD_REQUEST);
 				}
 
@@ -190,6 +195,30 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return userDto;
+	}
+
+	public String sendEmail(UserRequest userRequest) {
+		String response = "Success";
+		try {
+			String fullName = userRequest.getFirstName() + " " + userRequest.getLastName();
+			String msgBody = "Welcome <h1>" + fullName + "</h1> to Exam Portal <br> Hello, <br> Hope You Enjoy "
+					+ "Solving Quizzes on our Portal <br> " + "Thanks & Regards <br>"
+					+ "Exam Portal | examportal092022@gmail.com ";
+			EmailDetails emailDetails = new EmailDetails();
+			emailDetails.setSubject("Exam Portal | Successful Registertation Mail");
+			emailDetails.setMsgBody(msgBody);
+			emailDetails.setRecipient(userRequest.getEmail());
+			System.out.println("Email  Details : " + emailDetails);
+//			String resp = emailService.sendSimpleMail(emailDetails);	
+//			System.out.println("Resp  : "+resp);
+			
+			String respwithA = emailService.sendMailWithAttachment(emailDetails);	
+			System.out.println("Resp  : "+respwithA);
+		} catch (Exception ex) {
+			response = "Failure";
+			System.out.println("Uanble To Send Mail !" + ex);
+		}
+		return response;
 	}
 
 }

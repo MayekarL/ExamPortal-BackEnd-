@@ -1,6 +1,10 @@
 package com.exam.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.exam.pojo.QuestionDto;
 import com.exam.pojo.QuestionResponse;
-import com.exam.pojo.QuizResponse;
 import com.exam.service.QuestionService;
 
 @RestController
@@ -24,34 +27,43 @@ public class QuestionController {
 
 	@Autowired
 	private QuestionService questionService;
-	
+
 	@PostMapping("/create")
 	public ResponseEntity<QuestionResponse> createQuestion(@RequestBody QuestionDto questionDto) {
 		QuestionResponse questionResponse = questionService.createQuestion(questionDto);
-		return new ResponseEntity<QuestionResponse>(questionResponse,questionResponse.getStatus());
+		return new ResponseEntity<QuestionResponse>(questionResponse, questionResponse.getStatus());
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable("id") Long id){
+	public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable("id") Long id) {
 		QuestionResponse questionResponse = questionService.getQuestionsOfQuiz(id);
-		return new ResponseEntity<QuestionResponse>(questionResponse,questionResponse.getStatus()); 
+		return new ResponseEntity<QuestionResponse>(questionResponse, questionResponse.getStatus());
 	}
-	
+
 	@PutMapping("/update/{id}")
-	public ResponseEntity<QuestionResponse> updateQuestion(@PathVariable("id") Long id,@RequestBody QuestionDto questionDto){
-		QuestionResponse questionResponse = questionService.updateQuestion(id,questionDto);
-		return new ResponseEntity<QuestionResponse>(questionResponse,questionResponse.getStatus()); 
+	public ResponseEntity<QuestionResponse> updateQuestion(@PathVariable("id") Long id,
+			@RequestBody QuestionDto questionDto) {
+		QuestionResponse questionResponse = questionService.updateQuestion(id, questionDto);
+		return new ResponseEntity<QuestionResponse>(questionResponse, questionResponse.getStatus());
 	}
-	
+
 	@GetMapping("/")
-	public ResponseEntity<QuestionResponse> getQuestions(){
+	public ResponseEntity<QuestionResponse> getQuestions() {
 		QuestionResponse questionResponse = questionService.getAllQuestions();
-		return new ResponseEntity<QuestionResponse>(questionResponse,questionResponse.getStatus()); 
+		return new ResponseEntity<QuestionResponse>(questionResponse, questionResponse.getStatus());
 	}
-	
+
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<QuestionResponse> deleteQuestionById(@PathVariable("id") Long id){
+	public ResponseEntity<QuestionResponse> deleteQuestionById(@PathVariable("id") Long id) {
 		QuestionResponse questionResponse = questionService.deleteQuestion(id);
-		return new ResponseEntity<QuestionResponse>(questionResponse,questionResponse.getStatus()); 
+		return new ResponseEntity<QuestionResponse>(questionResponse, questionResponse.getStatus());
+	}
+
+	// calculateMarks
+	@PostMapping("/calculate-marks")
+	public ResponseEntity<Map<String, Integer>> calculateMarks(@RequestBody List<QuestionDto> questionDto) {
+		Map<String, Integer> marks = questionService.calculateMarks(questionDto);
+		System.out.println("Marks : " + marks);
+		return new ResponseEntity<Map<String, Integer>>(marks, HttpStatus.OK);
 	}
 }

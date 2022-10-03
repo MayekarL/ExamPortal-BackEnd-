@@ -2,7 +2,9 @@ package com.exam.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -23,17 +25,17 @@ import com.exam.service.QuestionService;
 import com.exam.service.QuizService;
 
 @Service
-public class QuestionServiceImpl implements QuestionService{
+public class QuestionServiceImpl implements QuestionService {
 
 	@Autowired
 	private QuestionRepo questionRepo;
-	
+
 	@Autowired
 	private QuizService quizService;
-	
+
 	@Autowired
 	private ModelMapper model;
-	
+
 	@Override
 	public QuestionResponse createQuestion(QuestionDto questionDto) {
 		QuestionResponse questionResponse = new QuestionResponse();
@@ -114,7 +116,7 @@ public class QuestionServiceImpl implements QuestionService{
 			System.out.println("Exception : " + ex);
 		}
 		return questionResponse;
-		
+
 	}
 
 	@Override
@@ -138,7 +140,7 @@ public class QuestionServiceImpl implements QuestionService{
 			questionResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 			System.out.println("Exception : " + ex);
 		}
-		return questionResponse;	
+		return questionResponse;
 	}
 
 	@Override
@@ -146,7 +148,7 @@ public class QuestionServiceImpl implements QuestionService{
 		QuestionResponse questionResponse = new QuestionResponse();
 		List<Question> questions = questionRepo.findAll();
 		List<QuestionDto> questionList = new ArrayList<>();
-		
+
 		if (!questions.isEmpty()) {
 			questionResponse.setCode(0);
 			questionResponse.setMessage(ExamConstants.SUCCESS);
@@ -170,23 +172,55 @@ public class QuestionServiceImpl implements QuestionService{
 			QuizResponse quizResponse = quizService.getQuiz(quizId);
 			Set<Question> questions = quizResponse.getQuizDto().getQuestions();
 			List list = new ArrayList(questions);
-			if(list.size() > quizResponse.getQuizDto().getNumberOfQuestions()) {
-				list = list.subList(0, quizResponse.getQuizDto().getNumberOfQuestions()+1);
+			if (list.size() > quizResponse.getQuizDto().getNumberOfQuestions()) {
+				list = list.subList(0, quizResponse.getQuizDto().getNumberOfQuestions() + 1);
 			}
 			questionResponse.setCode(0);
 			questionResponse.setMessage(ExamConstants.SUCCESS);
 			questionResponse.setStatus(HttpStatus.OK);
 			Collections.shuffle(list);
 			questionResponse.setQuestionList(list);
-			
-		}catch(Exception ex) {
+
+		} catch (Exception ex) {
 			questionResponse.setCode(1);
 			questionResponse.setMessage(ExamConstants.SOMETHING_WENT_WRONG);
 			questionResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-			System.out.println("Exception : "+ex);
+			System.out.println("Exception : " + ex);
 		}
 		return questionResponse;
 	}
 
-	
+	@Override
+	public Map<String, Integer> calculateMarks(List<QuestionDto> questionList) {
+		Map<String, Integer> marks = new HashMap<String, Integer>();
+		try {
+			Double marksGot = 0.0;
+			Integer correctAnswers = 0;
+			Integer attempted = 0;
+			Integer  marksPerQuestion = (int) (questionList.get(0).getQuiz().getMaxMarks() / questionList.size());
+			for (QuestionDto question : questionList) {
+				
+				if (question.getGivenAnswer().equalsIgnoreCase(question.getAnswer())) {
+					correctAnswers++;
+				}
+				
+				if(!question.getGivenAnswer().equalsIgnoreCase("")) {
+					attempted++;
+				}
+				
+			}
+			marksGot = (double) (correctAnswers * marksPerQuestion);
+			Integer totalMarks = (int) Math.round(marksGot);
+			marks.put("marksGot", totalMarks);
+			marks.put("correctAnswers", correctAnswers);
+			marks.put("marksPerQuestion", marksPerQuestion);
+			marks.put("attempted", attempted);
+		} catch (Exception ex) {
+
+			System.out.println("Exception while calculating marks : " + ex);
+		}
+
+		return marks;
+	}
+
 }

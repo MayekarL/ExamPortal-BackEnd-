@@ -13,6 +13,7 @@ public class QuestionDto {
 	private String option3;
 	private String option4;
 	private String answer;
+	private String givenAnswer="";
 
 	private Quiz quiz;
 
@@ -88,11 +89,19 @@ public class QuestionDto {
 		this.quiz = quiz;
 	}
 
+	public String getGivenAnswer() {
+		return givenAnswer;
+	}
+
+	public void setGivenAnswer(String givenAnswer) {
+		this.givenAnswer = givenAnswer;
+	}
+
 	@Override
 	public String toString() {
 		return "QuestionDto [id=" + id + ", content=" + content + ", image=" + image + ", option1=" + option1
 				+ ", option2=" + option2 + ", option3=" + option3 + ", option4=" + option4 + ", answer=" + answer
-				+ ", quiz=" + quiz + "]";
+				+ ", givenAnswer=" + givenAnswer + ", quiz=" + quiz + "]";
 	}
 
 }

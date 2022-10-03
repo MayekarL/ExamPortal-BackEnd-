@@ -1,4 +1,4 @@
-package com.exam.controller;
+ package com.exam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,5 +58,26 @@ public class QuizController {
 		return new ResponseEntity<QuizResponse>(quizResponse, quizResponse.getStatus());
 	}
 
-
+	@GetMapping("/catgeories/{cId}")
+	public ResponseEntity<QuizResponse>getQuizByCategory(@PathVariable("cId") Long cId){
+		System.out.println("ID : " + cId);
+		QuizResponse quizResponse = quizService.getQuizByCategory(cId);
+		return new ResponseEntity<QuizResponse>(quizResponse, quizResponse.getStatus());
+	}
+	
+	@GetMapping("/get/active")
+	public ResponseEntity<QuizResponse> getActiveQuizes() {
+		QuizResponse quizResponse = quizService.getActiveQuiz(true);
+		return new ResponseEntity<QuizResponse>(quizResponse, quizResponse.getStatus());
+	}
+	
+	@GetMapping("/active/catgeories/{cId}")
+	public ResponseEntity<QuizResponse>getActiveQuizByCategory(@PathVariable("cId") Long cId){
+		System.out.println("ID : " + cId);
+		QuizResponse quizResponse = quizService.getActiveQuizofCategory(cId,true);
+		return new ResponseEntity<QuizResponse>(quizResponse, quizResponse.getStatus());
+	}
+	
+	
+	
 }
